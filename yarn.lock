@@ -78,6 +78,12 @@
     lodash "^4.17.4"
     react-native-vector-icons "4.5.0"
 
+"@nlabs/react-native-image-gallery@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@nlabs/react-native-image-gallery/-/react-native-image-gallery-1.1.0.tgz#a23fe3b6d51df2f1fc9bdc87979e3c3e2ba1748c"
+  dependencies:
+    react-native-vector-icons "^4.4.2"
+
 "@segment/loosely-validate-event@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@segment/loosely-validate-event/-/loosely-validate-event-1.1.2.tgz#d77840999e3f7e43e74b3b0d43391c1526f793b8"
@@ -8230,6 +8236,13 @@ react-inspector@^2.2.2:
     babel-runtime "^6.26.0"
     is-dom "^1.0.9"
 
+react-mixin@^3.0.5:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/react-mixin/-/react-mixin-3.1.1.tgz#68749756bfe32699e561372a4aeecb926db72b7f"
+  dependencies:
+    object-assign "^4.0.1"
+    smart-mixin "^2.0.0"
+
 react-modal@^3.1.10:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/react-modal/-/react-modal-3.3.1.tgz#7355db196482da0c7fa1cbecccf2bdd9bc366b14"
@@ -8272,6 +8285,14 @@ react-native-gesture-handler@1.0.0-alpha.39:
     invariant "^2.2.2"
     prop-types "^15.5.10"
 
+react-native-image-gallery@^2.1.5:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/react-native-image-gallery/-/react-native-image-gallery-2.1.5.tgz#f524b92ef7284d30ffbbd63f93019e0647e23229"
+  dependencies:
+    prop-types "^15.6.0"
+    react-mixin "^3.0.5"
+    react-timer-mixin "^0.13.3"
+
 react-native-iphone-x-helper@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.0.2.tgz#7dbca530930f7c1ce8633cc8fd13ba94102992e1"
@@ -8279,6 +8300,19 @@ react-native-iphone-x-helper@^1.0.1:
 react-native-maps@0.19.0:
   version "0.19.0"
   resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.19.0.tgz#ce94fad1cf360e335cb4338a68c95f791e869074"
+
+react-native-photo-gallery@^0.1.10:
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/react-native-photo-gallery/-/react-native-photo-gallery-0.1.10.tgz#c6098c88dec8b658f62824563388f426887149fc"
+  dependencies:
+    prop-types "^15.5.10"
+    react-native-photo-view "1.5.2"
+
+react-native-photo-view@1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/react-native-photo-view/-/react-native-photo-view-1.5.2.tgz#5d7f406ed5532a5a8a78c8ef8f40e81f688de1e2"
+  dependencies:
+    prop-types "^15.5.10"
 
 react-native-safe-module@^1.1.0:
   version "1.2.0"
@@ -8319,7 +8353,7 @@ react-native-tab-view@^0.0.65:
   dependencies:
     prop-types "^15.5.8"
 
-react-native-vector-icons@4.5.0:
+react-native-vector-icons@4.5.0, react-native-vector-icons@^4.4.2:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-4.5.0.tgz#6b95619e64f62f05f579f74a01fe5640df95158b"
   dependencies:
@@ -8454,7 +8488,7 @@ react-test-renderer@16.2.0, react-test-renderer@^16.0.0-0:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
-react-timer-mixin@^0.13.2:
+react-timer-mixin@^0.13.2, react-timer-mixin@^0.13.3:
   version "0.13.3"
   resolved "https://registry.yarnpkg.com/react-timer-mixin/-/react-timer-mixin-0.13.3.tgz#0da8b9f807ec07dc3e854d082c737c65605b3d22"
 
@@ -9329,6 +9363,10 @@ slugify@^1.0.2:
 smart-buffer@^1.0.13:
   version "1.1.15"
   resolved "https://registry.yarnpkg.com/smart-buffer/-/smart-buffer-1.1.15.tgz#7f114b5b65fab3e2a35aa775bb12f0d1c649bf16"
+
+smart-mixin@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/smart-mixin/-/smart-mixin-2.0.0.tgz#a34a1055e32a75b30d2b4e3ca323dc99cb53f437"
 
 snake-case@^1.1.0:
   version "1.1.2"

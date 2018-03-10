@@ -2,7 +2,7 @@
 import apisauce from 'apisauce'
 
 // our "constructor"
-const create = (baseURL = 'https://api.github.com/') => {
+const create = (baseURL = "http://api.kairos.com") => {
   // ------
   // STEP 1
   // ------
@@ -14,11 +14,17 @@ const create = (baseURL = 'https://api.github.com/') => {
     baseURL,
     // here are some default headers
     headers: {
-      'Cache-Control': 'no-cache'
+      'Cache-Control': 'no-cache',
+      "app_id": "11d54ad1",
+      "app_key": "5d1a4fe444a69c64cdfed10390f7ac7c" ,
+      "Content-Type" : "application/json"
     },
     // 10 second timeout...
     timeout: 10000
   })
+
+  payload = {"image" : "https://timedotcom.files.wordpress.com/2014/03/happily-surprised.jpg" }
+
 
   // ------
   // STEP 2
@@ -34,7 +40,7 @@ const create = (baseURL = 'https://api.github.com/') => {
   // Since we can't hide from that, we embrace it by getting out of the
   // way at this level.
   //
-  const getRoot = () => api.get('')
+  const getRoot = () => api.post('/detect', payload)
   const getRate = () => api.get('rate_limit')
   const getUser = (username) => api.get('search/users', {q: username})
 
