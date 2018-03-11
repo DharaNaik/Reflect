@@ -50,7 +50,7 @@ export default class FaceCamera extends Component {
   }
 
   renderGallery() {
-    return <GalleryScreen onPress={this.toggleView.bind(this)} />;
+    return <GalleryScreen props={this.props} onPress={this.toggleView.bind(this)} />;
   }
 
   takePicture = async function () {
@@ -81,6 +81,7 @@ renderNoPermissions() {
 }
 
 renderCamera() {
+
     const { hasCameraPermission } = this.state;
     if (hasCameraPermission === null) {
       return <View />;

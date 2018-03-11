@@ -25,11 +25,14 @@ const create = (baseURL = "http://api.kairos.com") => {
 
   payload = {"image" : "https://timedotcom.files.wordpress.com/2014/03/happily-surprised.jpg" }
 
-
+  const url = "/v2/media?source="
+  const image = "https://timedotcom.files.wordpress.com/2014/03/happily-surprised.jpg"
+  lastURL = "status_code=0&timeout=60"
+  const finalURL = baseURL + url + image + "&" + lastURL
+  
   // ------
   // STEP 2
   // ------
-  //
   // Define some functions that call the api.  The goal is to provide
   // a thin wrapper of the api layer providing nicer feeling functions
   // rather than "get", "post" and friends.
@@ -41,13 +44,13 @@ const create = (baseURL = "http://api.kairos.com") => {
   // way at this level.
   //
   const getRoot = () => api.post('/detect', payload)
+  const getEmotion = () => api.post(finalURL)
   const getRate = () => api.get('rate_limit')
   const getUser = (username) => api.get('search/users', {q: username})
 
   // ------
   // STEP 3
   // ------
-  //
   // Return back a collection of functions that we would consider our
   // interface.  Most of the time it'll be just the list of all the
   // methods in step 2.
@@ -60,7 +63,8 @@ const create = (baseURL = "http://api.kairos.com") => {
     // a list of the API functions from step 2
     getRoot,
     getRate,
-    getUser
+    getUser,
+    getEmotion,
   }
 }
 

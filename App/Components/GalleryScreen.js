@@ -58,8 +58,6 @@ export default class GalleryScreen extends React.Component {
         offsetY: (pictureSize - scaledHeight) / 2,
       };
     } else {
-        console.log(width, height)
-
       const scaledWidth = pictureSize * width / height;
       return {
         width: scaledWidth,
@@ -76,8 +74,11 @@ export default class GalleryScreen extends React.Component {
 
   fetchApiData  = async () => {
     const api = API.create()
-    const faces =  await api.getRoot();
-    console.log(faces)
+    let faces =  await api.getEmotion();
+    console.log(faces.data)
+    if(!faces) {
+        faces = await api.getRoot();
+    }
     this.setState({faces : faces })
  }
 
@@ -154,8 +155,8 @@ export default class GalleryScreen extends React.Component {
         { <ScrollView contentComponentStyle={{ flex: 1 }}>
             <View style={styles.pictures}>
                 {this.state.photos.map(photoUri => (
-                <View style={styles.pictureWrapper} key={photoUri}>
-                <Image
+                <TouchableOpacity onPress={() => console.log("Pic Tapped")} style={styles.pictureWrapper} key={photoUri}>
+                <Image 
                   key={photoUri}
                   style={styles.picture}
                   source={{
@@ -165,7 +166,7 @@ export default class GalleryScreen extends React.Component {
                 <View style={styles.facesContainer}>
                   {this.renderFaces(`${FileSystem.documentDirectory}photos/${photoUri}`)}
                 </View>
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
         </ScrollView> }
@@ -194,8 +195,8 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   pictureWrapper: {
-    width: pictureSize+ 100,
-    height: pictureSize + 100,
+    width: pictureSize,
+    height: pictureSize,
     margin: 10,
     alignItems : 'center',
     justifyContent : 'center'

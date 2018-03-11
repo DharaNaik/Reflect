@@ -3,6 +3,7 @@ import LaunchScreen from '../Containers/LaunchScreen'
 import SplashScreen from '../Components/Splash'
 import FaceCamera from '../Components/Camera'
 import LoginForm from '../Components/LoginForm'
+import GalleryScreen from '../Components/GalleryScreen'
 
 
 import styles from './Styles/NavigationStyles'
@@ -12,7 +13,8 @@ const PrimaryNav = StackNavigator({
   SplashScreen: { screen: SplashScreen },
   FaceCamera : {screen : FaceCamera},
   LoginForm : {screen : LoginForm},
-  LaunchScreen : {screen : LaunchScreen}
+  LaunchScreen : {screen : LaunchScreen},
+  GalleryScreen : {screen : GalleryScreen}
 }, {
   // Default config for all screens
   headerMode: 'none',
