@@ -4,9 +4,9 @@ import SplashScreen from '../Components/Splash'
 import FaceCamera from '../Components/Camera'
 import LoginForm from '../Components/LoginForm'
 import GalleryScreen from '../Components/GalleryScreen'
-
-
+import SingleImage from '../Components/SingleImage'
 import styles from './Styles/NavigationStyles'
+import Animate from '../Components/Animate'
 
 // Manifest of possible screens
 const PrimaryNav = StackNavigator({
@@ -14,7 +14,9 @@ const PrimaryNav = StackNavigator({
   FaceCamera : {screen : FaceCamera},
   LoginForm : {screen : LoginForm},
   LaunchScreen : {screen : LaunchScreen},
-  GalleryScreen : {screen : GalleryScreen}
+  GalleryScreen : {screen : GalleryScreen},
+  SingleImage : {screen : SingleImage},
+  Animate : {screen : Animate}
 }, {
   // Default config for all screens
   headerMode: 'none',

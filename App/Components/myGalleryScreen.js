@@ -1,23 +1,32 @@
 import React from 'react';
 import { Image, StyleSheet, View, TouchableOpacity, Text, ScrollView } from 'react-native';
-import { FileSystem, FaceDetector, DangerZone } from 'expo';
-import Animate from './Animate'
-import { NavigationActions } from 'react-navigation'
+import { FileSystem, FaceDetector,Font } from 'expo';
+import API from '../Services/Api'
+import {ImageGallery } from '@nlabs/react-native-image-gallery';
+import axios from 'axios'
 
 
-const pictureSize = 250;
+
+const pictureSize = 200;
 
 export default class GalleryScreen extends React.Component {
-  state = {
+
+    state = {
     faces: {},
     images: {},
     photos: [],
-    currentPhoto: '',
+    fontLoaded : false
   };
   _mounted = false;
+ 
 
   componentDidMount() {
-    this.setState({ currentPhoto: this.props.currentPhoto })
+
+     Font.loadAsync({
+        'ionicons': require('./Ionicons.ttf')
+        });
+        this.setState({ fontLoaded: true });
+
     this._mounted = true;
     FileSystem.readDirectoryAsync(FileSystem.documentDirectory + 'photos').then(photos => {
       if (this._mounted) {
@@ -34,8 +43,6 @@ export default class GalleryScreen extends React.Component {
   componentWillUnmount() {
     this._mounted = false;
   }
-
-
 
   getImageDimensions = ({ width, height }) => {
     if (width > height) {
@@ -65,16 +72,25 @@ export default class GalleryScreen extends React.Component {
     }
   };
 
+  fetchApiData  = async () => {
+    const api = API.create()
+    let faces =  await api.getEmotion();
+    console.log(faces.data)
+    if(!faces) {
+        faces = await api.getRoot();
+    }
+    this.setState({faces : faces })
+ }
+
   detectFaces = () => this.state.photos.forEach(this.detectFace);
 
-  detectFace = photoUri => {
-    return FaceDetector.detectFacesAsync(`${FileSystem.documentDirectory}photos/${photoUri}`, {
+  detectFace = photoUri =>
+    FaceDetector.detectFacesAsync(`${FileSystem.documentDirectory}photos/${photoUri}`, {
       detectLandmarks: FaceDetector.Constants.Landmarks.none,
       runClassifications: FaceDetector.Constants.Classifications.all,
     })
       .then(this.facesDetected)
       .catch(this.handleFaceDetectionError);
-  }
 
   facesDetected = ({ image, faces }) => {
     if (!this._mounted) return;
@@ -93,11 +109,12 @@ export default class GalleryScreen extends React.Component {
 
   renderFace = image => (face, index) => {
     const { scaleX, scaleY, offsetX, offsetY } = this.getImageDimensions(image);
+
     const layout = {
       top: offsetY + face.bounds.origin.y * scaleY,
       left: offsetX + face.bounds.origin.x * scaleX,
-      width: face.bounds.size.width * scaleX + 50,
-      height: face.bounds.size.height * scaleY + 50,
+      width: face.bounds.size.width * scaleX,
+      height: face.bounds.size.height * scaleY,
     };
 
     return (
@@ -114,27 +131,32 @@ export default class GalleryScreen extends React.Component {
     );
   };
 
-  renderIndividulaImage = (photoUri) => {
-    const selectedFile = `${FileSystem.documentDirectory}photos/${photoUri}`;
-    let smileProbability = -1
-    if(this.state.faces[selectedFile])
-      smileProbability = this.state.faces[selectedFile][0].smilingProbability;
-    this.props.navigation.navigate('Animate',{smileProbability});
-  }
+
+ 
 
   render() {
+
+    const imageUrls = this.state.photos.map((photoUri) => ({
+        uri:`${FileSystem.documentDirectory}photos/${photoUri}`,
+        id: photoUri,
+        title: "Sample Title",
+        description: "Sample Discription"
+      })
+    );
     return (
       <View style={styles.container}>
-        <TouchableOpacity style={styles.backButton} onPress={() => this.props.navigation.dispatch(NavigationActions.back())}>
+        <TouchableOpacity style={styles.backButton} onPress={this.props.onPress}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
 
-        <ScrollView contentComponentStyle={{ flex: 1 }}>
-          <View style={styles.pictures}>
-            {this.state.photos.map(photoUri => (
-              <TouchableOpacity
-                style={styles.pictureWrapper} key={photoUri} onPress={() => this.renderIndividulaImage(photoUri)}>
-                <Image
+        <TouchableOpacity style={styles.fetchButton} onPress={this.fetchApiData}>
+        <Text style={styles.buttonText}>Fetch</Text>
+        </TouchableOpacity>
+        { <ScrollView contentComponentStyle={{ flex: 1 }}>
+            <View style={styles.pictures}>
+                {this.state.photos.map(photoUri => (
+                <TouchableOpacity onPress={() => console.log("Pic Tapped")} style={styles.pictureWrapper} key={photoUri}>
+                <Image 
                   key={photoUri}
                   style={styles.picture}
                   source={{
@@ -147,7 +169,7 @@ export default class GalleryScreen extends React.Component {
               </TouchableOpacity>
             ))}
           </View>
-        </ScrollView>
+        </ScrollView> }
       </View>
     );
   }
@@ -157,18 +179,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 20,
-  },
-
-  animationContainer: {
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1
-  },
-  loadingAnimation: {
-    width: 400,
-    height: 400,
-    backgroundColor: 'transparent'
+    flexDirection : 'column'
   },
   pictures: {
     flex: 1,
@@ -181,11 +192,14 @@ const styles = StyleSheet.create({
     right: 0,
     left: 0,
     top: 0,
+    resizeMode: 'cover',
   },
   pictureWrapper: {
-    width: pictureSize + 100,
-    height: pictureSize + 100,
-    margin: 5,
+    width: pictureSize,
+    height: pictureSize,
+    margin: 10,
+    alignItems : 'center',
+    justifyContent : 'center'
   },
   facesContainer: {
     position: 'absolute',
@@ -195,8 +209,8 @@ const styles = StyleSheet.create({
     top: 0,
   },
   face: {
-    borderWidth: 5,
-    borderRadius: 5,
+    borderWidth: 2,
+    borderRadius: 2,
     position: 'absolute',
     borderColor: '#FFD700',
     justifyContent: 'center',
@@ -210,18 +224,24 @@ const styles = StyleSheet.create({
     fontSize: 20,
     backgroundColor: 'transparent',
   },
-
   backButton: {
     padding: 20,
     marginBottom: 4,
     backgroundColor: '#EF5E35',
+
   },
 
-  buttonText: {
-    color: 'white',
-    fontSize: 20,
-    marginTop: 5,
-    fontWeight: '700',
-    fontFamily: 'Academy Engraved LET'
+  fetchButton: {
+    padding: 20,
+    marginBottom: 4,
+    backgroundColor: '#EF5E35',
+    alignItems: 'flex-end'
   },
+  buttonText:{
+    color: 'white',
+    fontSize:20,
+    marginTop:5,
+    fontWeight:'700',
+    fontFamily:'Academy Engraved LET'
+},
 });

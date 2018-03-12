@@ -1,10 +1,69 @@
 import React, { Component } from 'react'
 import { Text,TextInput, View, KeyboardAvoidingView, Image, TouchableOpacity, 
-    StatusBar, StyleSheet } from 'react-native'
+    StatusBar, StyleSheet , Alert} from 'react-native'
 import FaceCamera from '../Components/Camera'
+import { Fingerprint } from 'expo'
 
+
+const UserName = "Dhara"
+const Password = "Naik"
 
 export default class LoginForm extends Component {
+    constructor(){
+        super()
+        this.state ={
+            isValid : false
+        }
+    }
+
+    handleUserName(text){
+        if(UserName === text){
+            this.setState({isValid : true})
+        }
+
+    }
+
+    handlePassword(text){
+        if(Password === text){
+            this.setState({isValid : true})
+
+        }
+    }
+
+
+    loginUsingFingerPrint(){
+        if(Fingerprint.hasHardwareAsync() && Fingerprint.isEnrolledAsync())
+        {
+            Fingerprint.authenticateAsync(
+                  'Please use fingerprints to Login!'
+                ).then(result => {
+                    if (result.success) {
+                        this.props.navigation.navigate('FaceCamera')
+                    } else {
+                        console.log('In Valid Login , Please try agin!');
+                      }
+            })
+        }
+    }
+
+    login(){    
+
+            if(this.state.isValid) {
+                this.props.navigation.navigate('FaceCamera')
+            }else{
+                console.log("False Login");
+             Alert.alert(
+                    'Invalid Login',
+                    'Invalid login details, Please Try Again !!',
+                [
+                
+                    {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                        {text: 'OK', onPress: () => console.log('OK Pressed')},
+                ],
+                { cancelable: false })
+            }
+    }
+
     render() {
         return (
             <KeyboardAvoidingView behavior='position' style={styles.container}>
@@ -18,25 +77,32 @@ export default class LoginForm extends Component {
                     />
                 </View>
             <View style={styles.inlineView}> 
-                <TextInput style={styles.input}
+                <TextInput onChangeText={(text) => this.handleUserName(text)} style={styles.input}
                     placeholder='Enter UserName/Email' placeholderTextColor='#EF5E35'
                     returnKeyType='next'
                     keyboardType='email-address'
                     autoCapitalize='none'
                     autoCorrect={false}
                     onSubmitEditing={() => this.passwordInput.focus()}/>
-                <TextInput style={styles.input}
+                <TextInput onChangeText={(text) => this.handlePassword(text)} style={styles.input}
                     placeholder='Enter Password' 
                     placeholderTextColor='#EF5E35'
                     secureTextEntry={true}
                     returnKeyType="go" 
                     ref={(input) => this.passwordInput = input} />
              </View>
-                <TouchableOpacity onPress={ () => { this.props.navigation.navigate('FaceCamera')} }  style={styles.buttonContainer}> 
+                <TouchableOpacity onPress={ () => this.login() }  style={styles.buttonContainer}> 
                     <Text style={styles.buttonText}>
                         Login
                     </Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity onPress={ () => this.loginUsingFingerPrint() }  style={styles.signonContainer}> 
+                    <Image style={styles.signinlogo} 
+                    source={require('../Images/Touch-icon-lg.png')}
+                    />
+            </TouchableOpacity>
+
                 <Text style={styles.instructions}>
                     Welcome to Reflection
                     Reflect your mood today !!
@@ -66,6 +132,13 @@ const styles = StyleSheet.create({
         fontFamily:'Avenir-MediumOblique'
     },
 
+    signonContainer :{
+        margin : 10,
+        justifyContent: 'center',
+        alignItems : 'center',
+
+    },
+
 
     buttonContainer:{
         backgroundColor: 'rgba(255,255,255,0.1)',
@@ -80,7 +153,6 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         alignItems : 'center',
         justifyContent: 'center',
-        margin:10
     },
 
     logo:{
@@ -88,6 +160,12 @@ const styles = StyleSheet.create({
         width:200,
         borderRadius:100,
 
+    },
+
+    signinlogo: {
+        height:60,
+        width:60,
+        borderRadius:10,
     },
 
     buttonText:{
@@ -111,7 +189,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         color: 'white',
-        margin: 40,
+        margin: 5,
         fontFamily: 'Academy Engraved LET'
       },
       
