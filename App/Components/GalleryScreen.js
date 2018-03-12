@@ -156,15 +156,9 @@ export default class GalleryScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20,
+    backgroundColor: 'transparent',
   },
-
-  animationContainer: {
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1
-  },
+  
   loadingAnimation: {
     width: 400,
     height: 400,
@@ -174,6 +168,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexWrap: 'wrap',
     flexDirection: 'row',
+
   },
   picture: {
     position: 'absolute',
@@ -181,12 +176,18 @@ const styles = StyleSheet.create({
     right: 0,
     left: 0,
     top: 0,
+    borderRadius:10,
+
   },
   pictureWrapper: {
     width: pictureSize + 100,
     height: pictureSize + 100,
-    margin: 5,
+    margin: 10,
+    marginLeft : 10,
+    marginRight:15,
+    borderRadius:10,
   },
+  
   facesContainer: {
     position: 'absolute',
     bottom: 0,
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
   },
   face: {
     borderWidth: 5,
-    borderRadius: 5,
+    borderRadius: 100,
     position: 'absolute',
     borderColor: '#FFD700',
     justifyContent: 'center',
@@ -211,10 +212,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
 
+
   backButton: {
     padding: 20,
     marginBottom: 4,
     backgroundColor: '#EF5E35',
+
   },
 
   buttonText: {

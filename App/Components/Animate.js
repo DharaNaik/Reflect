@@ -5,6 +5,7 @@ const { Lottie } = DangerZone;
 import { NavigationActions } from 'react-navigation'
 
 
+
 export default class Animate extends React.Component {
   state = {
     animation: null
@@ -17,9 +18,9 @@ export default class Animate extends React.Component {
     if(percentage > 90)
         returnLottie="https://www.lottiefiles.com/storage/datafiles/L24bw6K1vbW8WqT/data.json"; //Motivated
     else if(percentage > 80)
-        returnLottie = "https://www.lottiefiles.com/storage/datafiles/A9zB6wzqAra9ijf/data.json" // Trying so hard
-    else if(percentage > 70)
         returnLottie="https://www.lottiefiles.com/storage/datafiles/6VN84lL27Xh8ReG/data.json"; //Laughing Bear
+    else if(percentage > 70)
+    returnLottie = "https://www.lottiefiles.com/storage/datafiles/A9zB6wzqAra9ijf/data.json" // Trying so hard
     else if(percentage > 60)
         returnLottie="https://www.lottiefiles.com/storage/datafiles/ZQnE4XBjAalKEV0/data.json"; // Confused
     else if (percentage > 50)
@@ -86,6 +87,10 @@ export default class Animate extends React.Component {
             />
           )}
         </View>
+
+        <TouchableOpacity style={styles.feedbackButton} onPress={()=> this.props.navigation.navigate('Feedback')}>
+        <Text style={styles.feedbackText}>Feedback</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -114,6 +119,21 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     backgroundColor: '#EF5E35',
 
+  },
+
+  feedbackButton :{
+    padding : 10,
+    backgroundColor: '#EF5E35',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  feedbackText :{
+    color: 'white',
+    fontSize:20,
+    marginTop:5,
+    fontWeight:'700',
+    fontFamily:'Academy Engraved LET',
   },
 
   buttonText:{
