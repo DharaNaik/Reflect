@@ -1,10 +1,52 @@
 import React, { Component } from 'react'
 import { Text,TextInput, View, KeyboardAvoidingView, Image, TouchableOpacity, 
-    StatusBar, StyleSheet } from 'react-native'
+    StatusBar, StyleSheet , Alert} from 'react-native'
 import FaceCamera from '../Components/Camera'
 
 
+const UserName = "Dhara"
+const Password = "Naik"
+
 export default class LoginForm extends Component {
+    constructor(){
+        super()
+        this.state ={
+            isValid : false
+        }
+    }
+
+    handleUserName(text){
+        if(UserName === text){
+            this.setState({isValid : true})
+        }
+
+    }
+
+    handlePassword(text){
+        if(Password === text){
+            this.setState({isValid : true})
+
+        }
+    }
+
+    login(){
+        console.log("in Login", this.state.isValid)
+        if(this.state.isValid) {
+            this.props.navigation.navigate('FaceCamera')
+        }else{
+            console.log("False Login");
+         Alert.alert(
+                'Invalid Login',
+                'Invalid login details, Please Try Again !!',
+            [
+            
+                {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                    {text: 'OK', onPress: () => console.log('OK Pressed')},
+            ],
+            { cancelable: false })
+        }
+    }
+
     render() {
         return (
             <KeyboardAvoidingView behavior='position' style={styles.container}>
@@ -18,21 +60,21 @@ export default class LoginForm extends Component {
                     />
                 </View>
             <View style={styles.inlineView}> 
-                <TextInput style={styles.input}
+                <TextInput onChangeText={(text) => this.handleUserName(text)} style={styles.input}
                     placeholder='Enter UserName/Email' placeholderTextColor='#EF5E35'
                     returnKeyType='next'
                     keyboardType='email-address'
                     autoCapitalize='none'
                     autoCorrect={false}
                     onSubmitEditing={() => this.passwordInput.focus()}/>
-                <TextInput style={styles.input}
+                <TextInput onChangeText={(text) => this.handlePassword(text)} style={styles.input}
                     placeholder='Enter Password' 
                     placeholderTextColor='#EF5E35'
                     secureTextEntry={true}
                     returnKeyType="go" 
                     ref={(input) => this.passwordInput = input} />
              </View>
-                <TouchableOpacity onPress={ () => { this.props.navigation.navigate('FaceCamera')} }  style={styles.buttonContainer}> 
+                <TouchableOpacity onPress={ () => this.login() }  style={styles.buttonContainer}> 
                     <Text style={styles.buttonText}>
                         Login
                     </Text>

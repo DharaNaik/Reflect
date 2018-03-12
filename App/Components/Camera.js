@@ -2,6 +2,9 @@ import React, { Component, Dimensions  } from 'react'
 import { View, CameraRoll, StyleSheet, TouchableOpacity, Text, Vibration } from 'react-native'
 import { Constants, Camera, FileSystem, Permissions } from 'expo';
 import GalleryScreen from './GalleryScreen';
+import Animate from './Animate'
+
+const landmarkSize = 2;
 
 export default class FaceCamera extends Component {
 
@@ -18,6 +21,7 @@ export default class FaceCamera extends Component {
     showGallery: false,
     photos: [],
     faces: [],
+    currentPhoto : '',
     permissionsGranted: true,
   };
 
@@ -27,6 +31,7 @@ export default class FaceCamera extends Component {
   }
 
   componentDidMount() {
+    //FileSystem.deleteAsync(FileSystem.documentDirectory + 'photos')
     FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'photos').catch(e => {
       console.log(e, 'Directory exists');
     });
@@ -49,9 +54,6 @@ export default class FaceCamera extends Component {
     });
   }
 
-  renderGallery() {
-    return <GalleryScreen props={this.props} onPress={this.toggleView.bind(this)} />;
-  }
 
   takePicture = async function () {
     if (this.camera) {
@@ -61,14 +63,25 @@ export default class FaceCamera extends Component {
           to: `${FileSystem.documentDirectory}photos/Photo_${this.state.photoId}.jpg`,
         }).then(() => {
           this.setState({
-            photoId: this.state.photoId + 1,
+            photoId: this.state.photoId + 1
           });
+
           Vibration.vibrate();
+          this.renderGallery();
         });
       });
+      
     }
   };
 
+
+  onFacesDetected = ({ faces }) => this.setState({ faces });
+  onFaceDetectionError = state => console.warn('Faces detection error:', state);
+
+
+  renderGallery() {
+    this.props.navigation.navigate('GalleryScreen') 
+   }
 
 renderNoPermissions() {
   return (
@@ -80,8 +93,79 @@ renderNoPermissions() {
   );
 }
 
-renderCamera() {
 
+renderFace({ bounds, faceID, rollAngle, yawAngle }) {
+  return (
+    <View
+      key={faceID}
+      transform={[
+        { perspective: 600 },
+        { rotateZ: `${rollAngle.toFixed(0)}deg` },
+        { rotateY: `${yawAngle.toFixed(0)}deg` },
+      ]}
+      style={[
+        styles.face,
+        {
+          ...bounds.size,
+          left: bounds.origin.x,
+          top: bounds.origin.y,
+        },
+      ]}>
+      <Text style={styles.faceText}>ID: {faceID}</Text>
+      <Text style={styles.faceText}>rollAngle: {rollAngle.toFixed(0)}</Text>
+      <Text style={styles.faceText}>yawAngle: {yawAngle.toFixed(0)}</Text>
+    </View>
+  );
+}
+
+
+renderLandmarksOfFace(face) {
+  const renderLandmark = position =>
+    position && (
+      <View
+        style={[
+          styles.landmark,
+          {
+            left: position.x - landmarkSize / 2,
+            top: position.y - landmarkSize / 2,
+          },
+        ]}
+      />
+    );
+  return (
+    <View key={`landmarks-${face.faceID}`}>
+      {renderLandmark(face.leftEyePosition)}
+      {renderLandmark(face.rightEyePosition)}
+      {renderLandmark(face.leftEarPosition)}
+      {renderLandmark(face.rightEarPosition)}
+      {renderLandmark(face.leftCheekPosition)}
+      {renderLandmark(face.rightCheekPosition)}
+      {renderLandmark(face.leftMouthPosition)}
+      {renderLandmark(face.mouthPosition)}
+      {renderLandmark(face.rightMouthPosition)}
+      {renderLandmark(face.noseBasePosition)}
+      {renderLandmark(face.bottomMouthPosition)}
+    </View>
+  );
+}
+
+renderFaces() {
+  return (
+    <View style={styles.facesContainer} pointerEvents="none">
+      {this.state.faces.map(this.renderFace)}
+    </View>
+  );
+}
+
+renderLandmarks() {
+  return (
+    <View style={styles.facesContainer} pointerEvents="none">
+      {this.state.faces.map(this.renderLandmarksOfFace)}
+    </View>
+  );
+}
+
+renderCamera() {
     const { hasCameraPermission } = this.state;
     if (hasCameraPermission === null) {
       return <View />;
@@ -122,10 +206,10 @@ renderCamera() {
                 </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity
-              style={[styles.buttonContainer,styles.takePic]}
-              onPress={this.toggleView.bind(this)}>
-              <Text style={styles.buttonText}> GALLERY </Text>
+              <TouchableOpacity style={[styles.buttonContainer,styles.takePic]}>
+              <Text style = {styles.buttonText} onPress={ () => { this.props.navigation.navigate('GalleryScreen')} }>
+              <Text style={styles.flipText}> GALLERY </Text>
+              </Text>
             </TouchableOpacity>
             </View>
           </Camera>
@@ -139,7 +223,6 @@ renderCamera() {
       ? this.renderCamera()
       : this.renderNoPermissions();
     const content = this.state.showGallery ? this.renderGallery() : cameraScreenContent;
-    
     return <View style={styles.container}>{content}</View>;
   }
 }
@@ -183,7 +266,6 @@ const styles = StyleSheet.create({
   flipCamrea:{
       flex: 1,
       alignSelf: 'flex-end',
-      alignItems: 'flex-start',
  },
 
   buttonText: {

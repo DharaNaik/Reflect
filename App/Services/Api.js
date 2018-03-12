@@ -30,6 +30,7 @@ const create = (baseURL = "http://api.kairos.com") => {
   lastURL = "status_code=0&timeout=60"
   const finalURL = baseURL + url + image + "&" + lastURL
   
+  
   // ------
   // STEP 2
   // ------
