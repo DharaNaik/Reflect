@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Text,TextInput, View, KeyboardAvoidingView, Image, TouchableOpacity, 
     StatusBar, StyleSheet , Alert} from 'react-native'
 import FaceCamera from '../Components/Camera'
+import { Fingerprint } from 'expo'
 
 
 const UserName = "Dhara"
@@ -29,22 +30,38 @@ export default class LoginForm extends Component {
         }
     }
 
-    login(){
-        console.log("in Login", this.state.isValid)
-        if(this.state.isValid) {
-            this.props.navigation.navigate('FaceCamera')
-        }else{
-            console.log("False Login");
-         Alert.alert(
-                'Invalid Login',
-                'Invalid login details, Please Try Again !!',
-            [
-            
-                {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-                    {text: 'OK', onPress: () => console.log('OK Pressed')},
-            ],
-            { cancelable: false })
+
+    loginUsingFingerPrint(){
+        if(Fingerprint.hasHardwareAsync() && Fingerprint.isEnrolledAsync())
+        {
+            Fingerprint.authenticateAsync(
+                  'Please use fingerprints to Login!'
+                ).then(result => {
+                    if (result.success) {
+                        this.props.navigation.navigate('FaceCamera')
+                    } else {
+                        console.log('In Valid Login , Please try agin!');
+                      }
+            })
         }
+    }
+
+    login(){    
+
+            if(this.state.isValid) {
+                this.props.navigation.navigate('FaceCamera')
+            }else{
+                console.log("False Login");
+             Alert.alert(
+                    'Invalid Login',
+                    'Invalid login details, Please Try Again !!',
+                [
+                
+                    {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                        {text: 'OK', onPress: () => console.log('OK Pressed')},
+                ],
+                { cancelable: false })
+            }
     }
 
     render() {
@@ -79,6 +96,13 @@ export default class LoginForm extends Component {
                         Login
                     </Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity onPress={ () => this.loginUsingFingerPrint() }  style={styles.signonContainer}> 
+                    <Image style={styles.signinlogo} 
+                    source={require('../Images/Touch-icon-lg.png')}
+                    />
+            </TouchableOpacity>
+
                 <Text style={styles.instructions}>
                     Welcome to Reflection
                     Reflect your mood today !!
@@ -108,6 +132,13 @@ const styles = StyleSheet.create({
         fontFamily:'Avenir-MediumOblique'
     },
 
+    signonContainer :{
+        margin : 10,
+        justifyContent: 'center',
+        alignItems : 'center',
+
+    },
+
 
     buttonContainer:{
         backgroundColor: 'rgba(255,255,255,0.1)',
@@ -122,7 +153,6 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         alignItems : 'center',
         justifyContent: 'center',
-        margin:10
     },
 
     logo:{
@@ -130,6 +160,12 @@ const styles = StyleSheet.create({
         width:200,
         borderRadius:100,
 
+    },
+
+    signinlogo: {
+        height:60,
+        width:60,
+        borderRadius:10,
     },
 
     buttonText:{
@@ -153,7 +189,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         color: 'white',
-        margin: 40,
+        margin: 5,
         fontFamily: 'Academy Engraved LET'
       },
       
